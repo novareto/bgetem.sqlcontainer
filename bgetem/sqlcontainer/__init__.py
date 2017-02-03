@@ -7,7 +7,7 @@ from zope.interface import Interface
 from z3c.saconfig import named_scoped_session
 from zope.component import getUtility
 from zope.processlifetime import IProcessStarting
-from .models import Base, User
+from .models import Base
 
 
 @grok.subscribe(IEngineCreatedEvent)
@@ -18,10 +18,8 @@ def create_engine_created(event):
 
 @grok.subscribe(IProcessStarting)
 def startedHandler(event):
-    pass
-    #with transaction.manager:
-    #    session = named_scoped_session('sqlsession')
-    #    user = User(name='Christian')
-    #    session.add(user)
-    #    print "Created user"
+    with transaction.manager:
+        #session = named_scoped_session('sqlsession')
+        #print "Created user"
+        pass
 

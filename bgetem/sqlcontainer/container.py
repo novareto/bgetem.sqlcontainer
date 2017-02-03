@@ -1,20 +1,23 @@
 # -*- coding: utf-8 -*-
 
 import Acquisition
-from OFS.Traversable import Traversable
+
+from .models import PloneModel
+
 from Acquisition import ImplicitAcquisitionWrapper
-from zope.container.interfaces import IContainer
-from zope.location import ILocation, Location, LocationProxy, locate
-from zope.interface import implementer
-from z3c.saconfig import named_scoped_session
-from .models import PloneModel, User
 from OFS.SimpleItem import SimpleItem
+from OFS.Traversable import Traversable
+from Products.CMFCore.interfaces import IFolderish
+from z3c.saconfig import named_scoped_session
+from zope.container.interfaces import IContainer
+from Products.CMFPlone.interfaces.constrains import IConstrainTypes
+from zope.interface import implementer
+from zope.location import ILocation, Location, LocationProxy, locate
 from zope.location import locate
 from zope.publisher.interfaces import IPublishTraverse
-from Products.CMFCore.interfaces import IFolderish
 
 
-@implementer(IPublishTraverse, IContainer, IFolderish)
+@implementer(IPublishTraverse, IContainer, IFolderish, IConstrainTypes)
 class SQLContainer(Acquisition.Implicit, PloneModel, Location):
 
     model = None
@@ -52,6 +55,9 @@ class SQLContainer(Acquisition.Implicit, PloneModel, Location):
             raise KeyError(key)
         return self.locate(model)
 
+    def __contains__(self, id):
+        return self.__getitem__(id) is not None
+
     def query_filters(self, query):
         return query
 
@@ -80,13 +86,22 @@ class SQLContainer(Acquisition.Implicit, PloneModel, Location):
     def publishTraverse(self, request, name):
         return self[name]
 
+    # IConstrainTypes
+    def getConstrainTypesMode(self):
+        return 0
 
-class Users(SQLContainer):
-    model = User
-    title = u"Users"
-    
-    def key_converter(self, id):
-        return int(id)
+    # IConstrainTypes
+    def getLocallyAllowedTypes(self):
+        return [self.model.portal_type,]
 
+    # IConstrainTypes
+    def getImmediatelyAddableTypes(self):
+        return [self.model.portal_type,]
+
+    # IConstrainTypes
+    def getDefaultAddableTypes(self):
+        return [self.model.portal_type,]
+
+    # IConstrainTypes
     def allowedContentTypes(self):
-        return ['test_users']
+        return [self.model.portal_type,]

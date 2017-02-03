@@ -1,6 +1,5 @@
 <configure xmlns="http://namespaces.zope.org/zope"
            xmlns:zcml="http://namespaces.zope.org/zcml"
-	   xmlns:db="http://namespaces.zope.org/db"
 	   xmlns:browser="http://namespaces.zope.org/browser"
            xmlns:grok="http://namespaces.zope.org/grok">
 
@@ -10,19 +9,5 @@
   <include package="zeam.form.composed" />
   <include package="grokcore.layout" />
   <grok:grok package="." />
-
-  <include package="z3c.saconfig" file="meta.zcml" />
-  <db:engine name="bgetem" url="sqlite:////tmp/bgetem.sql" />
-  <db:session name="sqlsession" engine="bgetem" />
-
-  <browser:defaultView
-      for=".container.Users"
-      name="index"
-      />
-
-  <browser:defaultView
-      for=".models.User"
-      name="index"
-      />
   
 </configure>
