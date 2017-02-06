@@ -2,7 +2,7 @@
 
 from .menus import Action
 from .models import IModel, PloneModel
-from Acquisition import ImplicitAcquisitionWrapper
+from Acquisition import Implicit, ImplicitAcquisitionWrapper
 from .container import SQLContainer
 
 from Acquisition import aq_base, aq_inner, aq_acquire
@@ -30,7 +30,7 @@ def edit(context):
 
 # Base class for the add form
 # Give it the content type name
-class AddForm(add.DefaultAddForm, grok.MultiAdapter):
+class AddForm(Implicit, add.DefaultAddForm, grok.MultiAdapter):
     grok.baseclass()
     grok.adapts(SQLContainer, IDefaultBrowserLayer, IDexterityFTI)
     grok.provides(IBrowserPage)
@@ -54,7 +54,7 @@ class AddForm(add.DefaultAddForm, grok.MultiAdapter):
         self.immediate_view = None
 
     
-class AddView(add.DefaultAddView, grok.MultiAdapter):
+class AddView(Implicit, add.DefaultAddView, grok.MultiAdapter):
     form = AddForm
     grok.name('')
     grok.adapts(IModel, IDefaultBrowserLayer, IDexterityFTI)

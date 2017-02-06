@@ -35,8 +35,9 @@ class AddViewTraverser(SimpleHandler, grok.MultiAdapter):
                 add_view = queryMultiAdapter((self.context, self.request, ti))
                 
             if add_view is not None:
-                add_view.__name__ = name
-                view = ImplicitAcquisitionWrapper(add_view, self.context)
+                #add_view.__name__ = name
+                #view = ImplicitAcquisitionWrapper(add_view, self.context)
+                view = add_view.__of__(self.context)
                 return view
             
         raise TraversalError(self.context, name)
