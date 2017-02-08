@@ -1,5 +1,7 @@
+# -*- coding: utf-8 -*-
+
 from five import grok
-from .models import PloneModel
+from .models import IModel
 from plone.app.layout.globals.interfaces import IContextState
 from plone.app.layout.globals.context import ContextState
 from Products.CMFCore.interfaces import IActionInfo
@@ -55,7 +57,7 @@ def custom_actions(context, category=None, max=-1):
 
 
 class Contextual(ContextState, grok.MultiAdapter):
-    grok.adapts(PloneModel, Interface)
+    grok.adapts(IModel, Interface)
     grok.provides(IContextState)
     grok.name('plone_context_state')
 

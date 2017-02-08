@@ -13,6 +13,9 @@ class ContainerView(View):
     grok.name('index')
     grok.context(SQLContainer)
 
+    def isDefaultPage(self, context):
+        return True
+    
     def update(self):
         self.mt = getMultiAdapter(
             (self.context, self.request), name="main_template")

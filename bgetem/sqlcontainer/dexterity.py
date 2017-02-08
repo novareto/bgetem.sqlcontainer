@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 
 from .menus import Action
-from .models import IModel, PloneModel
+from .models import IModel
 from Acquisition import Implicit, ImplicitAcquisitionWrapper
 from .container import SQLContainer
 
 from Acquisition import aq_base, aq_inner, aq_acquire
 from five import grok
 from plone.app.dexterity.interfaces import ITypeSettings, ITypeStats
-from plone.dexterity.browser import add
+from plone.dexterity.browser import add, edit
 from plone.dexterity.interfaces import IDexterityContent
 from plone.dexterity.interfaces import IDexterityFTI
 from zope.interface import implementer, Interface
@@ -30,10 +30,11 @@ def edit(context):
 
 # Base class for the add form
 # Give it the content type name
-class AddForm(Implicit, add.DefaultAddForm, grok.MultiAdapter):
+class AddForm(add.DefaultAddForm, grok.MultiAdapter):
     grok.baseclass()
     grok.adapts(SQLContainer, IDefaultBrowserLayer, IDexterityFTI)
     grok.provides(IBrowserPage)
+
     index_html = None
     
     def __init__(self, *args, **kwargs):
@@ -61,6 +62,7 @@ class AddView(Implicit, add.DefaultAddView, grok.MultiAdapter):
     grok.provides(IBrowserPage)
 
 
+    
 # Base class for the FTI.
 # Give it the content type name
 @implementer(IDexterityFTI, ITypeSettings, ITypeStats)
@@ -78,6 +80,10 @@ class ContentFTI(grok.GlobalUtility):
     def Title(cls):
         return grok.title.bind().get(cls.__model__)
 
+    @classmethod
+    def Description(cls):
+        return grok.description.bind().get(cls.__model__)
+    
     @classmethod
     def lookupSchema(cls):
         return cls.schema
@@ -112,7 +118,11 @@ class ContentFTI(grok.GlobalUtility):
 
     def isConstructionAllowed(self, container):
         return True
-    
+
+    @classmethod
+    def getIconExprObject(cls):
+        return None
+
     add_permission = 'zope.View'
     allowed_content_types = set()
     behaviors = list()
